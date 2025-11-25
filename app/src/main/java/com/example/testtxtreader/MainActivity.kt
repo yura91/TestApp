@@ -13,41 +13,44 @@ import androidx.navigation.navArgument
 import com.example.testtxtreader.model.ImageItem
 import com.example.testtxtreader.ui.ImageViewerScreen
 import com.example.testtxtreader.ui.ImagesGridScreen
+import com.example.testtxtreader.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val navController = rememberNavController()
-            val vm: ImagesViewModel = viewModel()
+            AppTheme {
+                val navController = rememberNavController()
+                val vm: ImagesViewModel = viewModel()
 
-            LaunchedEffect(Unit) { vm.load() }
+                LaunchedEffect(Unit) { vm.load() }
 
-            NavHost(navController, startDestination = "grid") {
-                composable("grid") {
-                    val items by vm.items.collectAsState()
-                    ImagesGridScreen(items) { index ->
-                        navController.navigate("viewer/$index")
+                NavHost(navController, startDestination = "grid") {
+                    composable("grid") {
+                        val items by vm.items.collectAsState()
+                        ImagesGridScreen(items) { index ->
+                            navController.navigate("viewer/$index")
+                        }
                     }
-                }
-                composable(
-                    route = "viewer/{startIndex}",
-                    arguments = listOf(navArgument("startIndex") { type = NavType.IntType })
-                ) { backStackEntry ->
-                    val items by vm.items.collectAsState()
-                    val images =
-                        items.mapNotNull { if (it is ImageItem.Url) it.url else null }
-                    val startIndex =
-                        backStackEntry.arguments?.getInt("startIndex") ?: 0
+                    composable(
+                        route = "viewer/{startIndex}",
+                        arguments = listOf(navArgument("startIndex") { type = NavType.IntType })
+                    ) { backStackEntry ->
+                        val items by vm.items.collectAsState()
+                        val images =
+                            items.mapNotNull { if (it is ImageItem.Url) it.url else null }
+                        val startIndex =
+                            backStackEntry.arguments?.getInt("startIndex") ?: 0
 
-                    if (images.isNotEmpty()) {
-                        ImageViewerScreen(
-                            images = images,
-                            startIndex =
-                            images.indexOf((items[startIndex] as? ImageItem.Url)?.url)
-                                .coerceAtLeast(0),
-                            onBack = { navController.popBackStack() },
-                        )
+                        if (images.isNotEmpty()) {
+                            ImageViewerScreen(
+                                images = images,
+                                startIndex =
+                                images.indexOf((items[startIndex] as? ImageItem.Url)?.url)
+                                    .coerceAtLeast(0),
+                                onBack = { navController.popBackStack() },
+                            )
+                        }
                     }
                 }
             }

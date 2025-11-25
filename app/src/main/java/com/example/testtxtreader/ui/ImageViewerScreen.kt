@@ -2,6 +2,7 @@ package com.example.testtxtreader.ui
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -34,6 +35,9 @@ fun ImageViewerScreen(
     val context = LocalContext.current
     var retryHash by remember { mutableStateOf(0) }
 
+    val backgroundColor = MaterialTheme.colorScheme.background
+    val contentColor = MaterialTheme.colorScheme.onBackground
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -64,7 +68,10 @@ fun ImageViewerScreen(
         }
     ) { padding ->
         Box(
-            modifier = Modifier.fillMaxSize().padding(padding),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .background(backgroundColor),
             contentAlignment = Alignment.Center,
         ) {
             var scale by remember { mutableStateOf(1f) }
@@ -76,7 +83,8 @@ fun ImageViewerScreen(
                     .addHeader("User-Agent", "Mozilla/5.0")
                     .build(),
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .graphicsLayer(
                         scaleX = scale,
                         scaleY = scale,
@@ -94,27 +102,45 @@ fun ImageViewerScreen(
                     is Error -> Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(backgroundColor)
                     ) {
-                        Text("Ошибка загрузки")
-                        Button(onClick = { retryHash++ }) { Text("Повторить") }
+                        Text("Ошибка загрузки", color = contentColor)
+                        Button(
+                            onClick = { retryHash++ },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
+                        ) { Text("Повторить") }
                     }
+
                     else -> SubcomposeAsyncImageContent()
                 }
             }
 
             Row(
-                modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .background(backgroundColor.copy(alpha = 0.7f)),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 IconButton(
                     onClick = { if (page > 0) page-- },
                     enabled = page > 0,
+                    colors = IconButtonDefaults.iconButtonColors(
+                        contentColor = contentColor
+                    )
                 ) { Icon(Icons.Default.ArrowBack, contentDescription = "Назад") }
 
                 IconButton(
                     onClick = { if (page < images.size - 1) page++ },
                     enabled = page < images.size - 1,
+                    colors = IconButtonDefaults.iconButtonColors(
+                        contentColor = contentColor
+                    )
                 ) { Icon(Icons.Default.ArrowForward, contentDescription = "Вперёд") }
             }
         }

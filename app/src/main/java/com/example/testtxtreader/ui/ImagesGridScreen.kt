@@ -55,20 +55,20 @@ fun ImagesGridScreen(
                     Modifier
                         .aspectRatio(1f)
                         .fillMaxWidth()
-                        .background(Color.Gray)
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
                         .clickable { /* noop */ },
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text("URL", color = Color.White, textAlign = TextAlign.Center)
+                    Text("URL", color = MaterialTheme.colorScheme.onSecondaryContainer, textAlign = TextAlign.Center)
                 }
                 is ImageItem.NotALink -> Box(
                     Modifier
                         .aspectRatio(1f)
                         .fillMaxWidth()
-                        .background(Color.LightGray),
+                        .background(MaterialTheme.colorScheme.background),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text("?", color = Color.Black, textAlign = TextAlign.Center)
+                    Text("?", color = MaterialTheme.colorScheme.onBackground, textAlign = TextAlign.Center)
                 }
             }
         }
