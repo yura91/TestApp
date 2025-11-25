@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImagePainter.State.Error
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
+import coil.request.ImageRequest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,7 +71,10 @@ fun ImageViewerScreen(
             var offset by remember { mutableStateOf(Offset.Zero) }
 
             SubcomposeAsyncImage(
-                model = images[page],
+                model = ImageRequest.Builder(context)
+                    .data(images[page])
+                    .addHeader("User-Agent", "Mozilla/5.0")
+                    .build(),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize()
                     .graphicsLayer(
@@ -99,7 +103,6 @@ fun ImageViewerScreen(
                 }
             }
 
-            // Перелистывание кнопками (можно заменить на Pager)
             Row(
                 modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
                 horizontalArrangement = Arrangement.SpaceBetween,
