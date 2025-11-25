@@ -9,15 +9,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class ImagesViewModel(app: Application): AndroidViewModel(app) {
+class ImagesViewModel(app: Application) : AndroidViewModel(app) {
     private val _items = MutableStateFlow<List<ImageItem>>(emptyList())
     val items = _items.asStateFlow()
 
-    private val IMAGE_REGEX = Regex("""https?://.+?.(jpg|jpeg|png|gif|webp)""", RegexOption.IGNORE_CASE)
+    private val IMAGE_REGEX =
+        Regex("""https?://.+?.(jpg|jpeg|png|gif|webp)""", RegexOption.IGNORE_CASE)
 
     fun load() {
         viewModelScope.launch {
-            val file = FileDownloader.downloadFile(getApplication(), "https://it-link.ru/test/images.txt")
+            val file =
+                FileDownloader.downloadFile(getApplication(), "https://it-link.ru/test/images.txt")
             val lines = file?.readLines() ?: emptyList()
             _items.value = lines.map { line ->
                 val match = IMAGE_REGEX.find(line)

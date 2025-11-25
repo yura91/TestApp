@@ -38,35 +38,29 @@ fun ImageViewerScreen(
     val backgroundColor = MaterialTheme.colorScheme.background
     val contentColor = MaterialTheme.colorScheme.onBackground
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Изображение ${page + 1}/${images.size}") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Назад")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = {
-                        val intent = Intent(Intent.ACTION_SEND).apply {
-                            type = "text/plain"
-                            putExtra(Intent.EXTRA_TEXT, images[page])
-                        }
-                        context.startActivity(Intent.createChooser(intent, "Поделиться"))
-                    }) {
-                        Icon(Icons.Default.Share, contentDescription = "Поделиться")
-                    }
-                    IconButton(onClick = {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(images[page]))
-                        context.startActivity(intent)
-                    }) {
-                        Icon(Icons.Default.OpenInBrowser, contentDescription = "Открыть в браузере")
-                    }
+    Scaffold(topBar = {
+        TopAppBar(title = { Text("Изображение ${page + 1}/${images.size}") }, navigationIcon = {
+            IconButton(onClick = onBack) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Назад")
+            }
+        }, actions = {
+            IconButton(onClick = {
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, images[page])
                 }
-            )
-        }
-    ) { padding ->
+                context.startActivity(Intent.createChooser(intent, "Поделиться"))
+            }) {
+                Icon(Icons.Default.Share, contentDescription = "Поделиться")
+            }
+            IconButton(onClick = {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(images[page]))
+                context.startActivity(intent)
+            }) {
+                Icon(Icons.Default.OpenInBrowser, contentDescription = "Открыть в браузере")
+            }
+        })
+    }) { padding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -78,10 +72,8 @@ fun ImageViewerScreen(
             var offset by remember { mutableStateOf(Offset.Zero) }
 
             SubcomposeAsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data(images[page])
-                    .addHeader("User-Agent", "Mozilla/5.0")
-                    .build(),
+                model = ImageRequest.Builder(context).data(images[page])
+                    .addHeader("User-Agent", "Mozilla/5.0").build(),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()
@@ -108,8 +100,7 @@ fun ImageViewerScreen(
                     ) {
                         Text("Ошибка загрузки", color = contentColor)
                         Button(
-                            onClick = { retryHash++ },
-                            colors = ButtonDefaults.buttonColors(
+                            onClick = { retryHash++ }, colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.primary,
                                 contentColor = MaterialTheme.colorScheme.onPrimary
                             )

@@ -51,6 +51,7 @@ fun ImagesGridScreen(
                         .background(MaterialTheme.colorScheme.surfaceVariant)
                         .clickable { onImageClick(index) }
                 )
+
                 is ImageItem.NonImageUrl -> Box(
                     Modifier
                         .aspectRatio(1f)
@@ -59,8 +60,13 @@ fun ImagesGridScreen(
                         .clickable { /* noop */ },
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text("URL", color = MaterialTheme.colorScheme.onSecondaryContainer, textAlign = TextAlign.Center)
+                    Text(
+                        "URL",
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        textAlign = TextAlign.Center
+                    )
                 }
+
                 is ImageItem.NotALink -> Box(
                     Modifier
                         .aspectRatio(1f)
@@ -68,7 +74,11 @@ fun ImagesGridScreen(
                         .background(MaterialTheme.colorScheme.background),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text("?", color = MaterialTheme.colorScheme.onBackground, textAlign = TextAlign.Center)
+                    Text(
+                        "?",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
         }
