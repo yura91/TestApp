@@ -24,13 +24,13 @@ class ImagesViewModel(app: Application) : AndroidViewModel(app) {
 
     fun load() {
         viewModelScope.launch {
-            if(!isFileLoaded) {
+            if (!isFileLoaded) {
                 val file =
                     FileDownloader.downloadFile(
                         getApplication(),
                         "https://it-link.ru/test/images.txt"
                     )
-                if(file == null) {
+                if (file == null) {
                     isFileLoaded = false
                 } else {
                     val lines = file.readLines()
