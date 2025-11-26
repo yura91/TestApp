@@ -18,9 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.testtxtreader.model.ImageItem
 
 @Composable
@@ -29,6 +31,7 @@ fun ImagesGridScreen(
     onImageClick: (Int) -> Unit,
 ) {
     val configuration = LocalConfiguration.current
+    val context = LocalContext.current
     val screenWidth = configuration.screenWidthDp.dp
     val cellMinWidth = 100.dp
     val columns = (screenWidth / cellMinWidth).toInt().coerceAtLeast(1)
@@ -43,7 +46,8 @@ fun ImagesGridScreen(
         itemsIndexed(items) { index, item ->
             when (item) {
                 is ImageItem.Url -> AsyncImage(
-                    model = item.url,
+                    model = ImageRequest.Builder(context).data(item.url)
+                        .addHeader("User-Agent", "Mozilla/5.0").build(),
                     contentDescription = null,
                     modifier = Modifier
                         .aspectRatio(1f)

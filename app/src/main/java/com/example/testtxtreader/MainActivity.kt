@@ -3,6 +3,7 @@ package com.example.testtxtreader
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -11,6 +12,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.example.testtxtreader.model.ImageItem
+import com.example.testtxtreader.model.NetworkObserver
 import com.example.testtxtreader.ui.ImageViewerScreen
 import com.example.testtxtreader.ui.ImagesGridScreen
 import com.example.testtxtreader.ui.theme.AppTheme
@@ -18,12 +20,20 @@ import com.example.testtxtreader.ui.theme.AppTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val networkObserver = NetworkObserver(this)
         setContent {
             AppTheme {
                 val navController = rememberNavController()
                 val vm: ImagesViewModel = viewModel()
 
                 LaunchedEffect(Unit) { vm.load() }
+
+                DisposableEffect(Unit) {
+                    networkObserver.observe(this@MainActivity) {
+                        vm.load()
+                    }
+                    onDispose {}
+                }
 
                 NavHost(navController, startDestination = "grid") {
                     composable("grid") {
